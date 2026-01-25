@@ -23,10 +23,9 @@ const DashboardLayout = () => {
       )}
 
       {/* Main Content */}
-      <div className="lg:pl-64 min-h-screen transition-all duration-300">
+      <div className="lg:pl-64 min-h-screen transition-all duration-300 flex flex-col">
         <Navbar onMenuClick={() => setSidebarOpen(!sidebarOpen)} />
-        
-        <main className="p-6">
+        <main className="flex-1 w-full h-full">
           <Outlet />
         </main>
       </div>

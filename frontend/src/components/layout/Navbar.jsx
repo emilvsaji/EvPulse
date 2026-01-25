@@ -46,7 +46,7 @@ const Navbar = ({ onMenuClick }) => {
 
   const handleLogout = () => {
     logout();
-    navigate('/login');
+    navigate('/');
   };
 
   const getNotificationIcon = (type) => {

@@ -2,12 +2,15 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AuthProvider, NotificationProvider, useAuth } from './context';
 import { DashboardLayout } from './components';
 
+// Landing Page
+import Landing from './pages/Landing';
+
 // Auth Pages
 import { Login, Register } from './pages/auth';
 
 // User Pages
-import UserDashboard from './pages/user/DashboardNew';
 import {
+  Dashboard as UserDashboard,
   StationDiscovery,
   StationDetail,
   Bookings,
@@ -286,8 +289,8 @@ const AppRoutes = () => {
       />
 
       {/* Default Routes */}
-      <Route path="/" element={<Navigate to="/login" replace />} />
-      <Route path="*" element={<Navigate to="/login" replace />} />
+      <Route path="/" element={<Landing />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 };
