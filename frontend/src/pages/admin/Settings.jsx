@@ -34,7 +34,7 @@ const Settings = () => {
 
   // General settings
   const [general, setGeneral] = useState({
-    platformName: 'EVPulse',
+    platformName: 'EvPulse',
     supportEmail: 'support@evpulse.com',
     timezone: 'UTC',
     currency: 'USD',

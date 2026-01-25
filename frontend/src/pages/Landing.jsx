@@ -1,129 +1,147 @@
 import { Link } from 'react-router-dom';
-import { ArrowRight, Zap, TrendingUp, DollarSign, BarChart3, Wallet, Activity } from 'lucide-react';
+import { ArrowRight, Zap, Battery, Clock, DollarSign, Activity, TrendingUp, Wallet, BarChart3, Globe, Settings, Shield } from 'lucide-react';
 
 const Landing = () => {
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-green-900 via-green-800 to-green-900">
+    <div className="min-h-screen flex flex-col bg-white">
       {/* Navigation */}
-      <nav className="bg-green-900/50 backdrop-blur-sm border-b border-green-700/30">
-        <div className="max-w-7xl mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Zap className="w-6 h-6 text-green-400" />
-              <span className="text-xl font-bold text-white">ChargeEase</span>
-            </div>
-            <div className="hidden md:flex items-center gap-8">
-              <a href="#home" className="text-white hover:text-green-400 transition-colors">Home</a>
-              <a href="#features" className="text-white hover:text-green-400 transition-colors">Features</a>
-              <a href="#dashboard" className="text-white hover:text-green-400 transition-colors">Dashboard</a>
-              <a href="#contact" className="text-white hover:text-green-400 transition-colors">Contact</a>
-            </div>
-            <div className="flex items-center gap-4">
-              <Link to="/login" className="text-white hover:text-green-400 transition-colors">
-                Login
-              </Link>
-              <Link 
-                to="/register" 
-                className="bg-green-400 text-green-900 px-6 py-2 rounded-lg font-medium hover:bg-green-300 transition-colors"
-              >
-                Get Started
-              </Link>
-            </div>
+      <nav className="w-full bg-green-900 py-4 px-6">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          {/* Logo */}
+          <div className="flex items-center gap-2">
+            <Zap className="w-6 h-6 text-green-400" />
+            <span className="text-xl font-bold text-white">EvPulse</span>
+          </div>
+
+          {/* Center Navigation Links */}
+          <div className="hidden md:flex items-center bg-green-800/50 rounded-full px-2 py-1">
+            <a href="#home" className="text-white hover:text-green-400 transition-colors px-4 py-2 rounded-full text-sm font-medium">Home</a>
+            <a href="#features" className="text-white hover:text-green-400 transition-colors px-4 py-2 rounded-full text-sm font-medium">Features</a>
+            <a href="#dashboard" className="text-white hover:text-green-400 transition-colors px-4 py-2 rounded-full text-sm font-medium">Dashboard</a>
+            <a href="#contact" className="text-white hover:text-green-400 transition-colors px-4 py-2 rounded-full text-sm font-medium">Contact</a>
+          </div>
+
+          {/* Right Side - Login & Get Started */}
+          <div className="flex items-center gap-4">
+            <Link to="/login" className="text-white hover:text-green-400 transition-colors text-sm font-medium">
+              Login
+            </Link>
+            <Link 
+              to="/register" 
+              className="bg-green-400 text-green-900 px-5 py-2 rounded-full text-sm font-semibold hover:bg-green-300 transition-colors"
+            >
+              Get Started
+            </Link>
           </div>
         </div>
       </nav>
 
       {/* Hero Section */}
-      <section className="relative flex-1 flex flex-col justify-center overflow-hidden w-full">
-        <div className="w-full px-0 sm:px-6 py-20 flex-1 flex flex-col justify-center">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            {/* Left Content */}
-            <div className="space-y-8">
-              <div className="space-y-4">
-                <h1 className="text-5xl lg:text-6xl font-bold text-white leading-tight">
-                  Charge Smarter<br />
-                  <span className="text-green-400">Drive Farther</span>
-                </h1>
-                <p className="text-lg text-green-100 max-w-xl">
-                  Monitor, manage and optimize your EV charging stations with a unified SaaS platform built for efficiency and scale.
-                </p>
-              </div>
-              <div className="flex items-center gap-4">
-                <button className="bg-white text-green-900 px-8 py-3 rounded-lg font-medium hover:bg-green-50 transition-colors flex items-center gap-2">
-                  Get Started for Free <ArrowRight className="w-5 h-5" />
-                </button>
-              </div>
+      <section id="home" className="relative bg-green-900 overflow-hidden">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-20 left-10 w-64 h-64 bg-green-400 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-20 right-10 w-96 h-96 bg-green-400 rounded-full blur-3xl"></div>
+        </div>
 
-              {/* Person Image Placeholder */}
+        <div className="max-w-7xl mx-auto px-6 py-16 lg:py-20">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            {/* Left - Person Image */}
+            <div className="lg:col-span-4 relative hidden lg:block">
               <div className="relative">
-                <div className="absolute -left-10 top-0 w-64 h-80 bg-gradient-to-br from-green-600/30 to-green-800/30 rounded-3xl backdrop-blur-sm border border-green-500/20">
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="text-center text-green-300">
-                      <div className="w-32 h-32 mx-auto mb-4 bg-green-700/50 rounded-full flex items-center justify-center">
-                        <Zap className="w-16 h-16" />
-                      </div>
-                      <p className="text-sm">EV User</p>
+                {/* Person placeholder with EV charging */}
+                <div className="w-full h-[450px] bg-gradient-to-br from-green-700/30 to-green-900/30 rounded-3xl overflow-hidden relative">
+                  <div className="absolute inset-0 flex items-end justify-center">
+                    <div className="w-full h-full bg-gradient-to-t from-green-800/50 to-transparent absolute bottom-0"></div>
+                    {/* Stylized person silhouette */}
+                    <div className="relative z-10 mb-8">
+                      <div className="w-32 h-32 bg-green-600/40 rounded-full mx-auto mb-4"></div>
+                      <div className="w-48 h-64 bg-green-600/30 rounded-t-full mx-auto"></div>
                     </div>
+                  </div>
+                  {/* EV Car representation */}
+                  <div className="absolute bottom-8 right-4 bg-white/10 backdrop-blur-sm rounded-xl p-3">
+                    <Battery className="w-8 h-8 text-green-400" />
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Right Content - Charging Station */}
-            <div className="relative flex justify-center lg:justify-end">
-              <div className="relative">
-                {/* Charging Station Display */}
-                <div className="w-80 h-[500px] bg-gradient-to-b from-gray-800 to-gray-900 rounded-3xl shadow-2xl border-8 border-white/10 p-6">
-                  <div className="h-full flex flex-col">
-                    {/* Screen Header */}
-                    <div className="text-center mb-6">
-                      <div className="inline-block bg-green-500 text-white px-4 py-1 rounded-full text-sm font-medium mb-2">
-                        CHARGING
-                      </div>
-                      <div className="text-6xl font-bold text-white">80%</div>
-                      <div className="text-gray-400 text-sm mt-2">Battery Level</div>
-                    </div>
+            {/* Center - Text Content */}
+            <div className="lg:col-span-4 text-center lg:text-left z-10">
+              <h1 className="text-4xl lg:text-5xl font-bold text-white leading-tight mb-6">
+                Charge Smarter
+                <br />
+                <span className="text-green-400 italic">Drive Farther</span>
+              </h1>
+              <p className="text-green-100 text-base mb-8 max-w-md mx-auto lg:mx-0">
+                Monitor, manage and optimize your EV charging stations with a unified SaaS platform built for efficiency and scale.
+              </p>
+              <Link 
+                to="/register"
+                className="inline-flex items-center gap-2 bg-white text-green-900 px-6 py-3 rounded-lg font-semibold hover:bg-green-50 transition-colors"
+              >
+                Get Started for Free
+                <ArrowRight className="w-5 h-5" />
+              </Link>
+            </div>
 
-                    {/* Stats */}
-                    <div className="space-y-3 mb-6">
-                      <div className="bg-gray-700/50 rounded-lg p-3">
-                        <div className="flex justify-between items-center">
-                          <span className="text-gray-300 text-sm">Power</span>
-                          <span className="text-white font-medium">7.2 kW</span>
-                        </div>
-                      </div>
-                      <div className="bg-gray-700/50 rounded-lg p-3">
-                        <div className="flex justify-between items-center">
-                          <span className="text-gray-300 text-sm">Time Remaining</span>
-                          <span className="text-white font-medium">45 min</span>
-                        </div>
-                      </div>
-                      <div className="bg-gray-700/50 rounded-lg p-3">
-                        <div className="flex justify-between items-center">
-                          <span className="text-gray-300 text-sm">Cost</span>
-                          <span className="text-green-400 font-medium">$8.50</span>
-                        </div>
-                      </div>
+            {/* Right - Charging Station Display */}
+            <div className="lg:col-span-4 flex justify-center lg:justify-end">
+              <div className="relative">
+                {/* Charging Station */}
+                <div className="w-64 bg-gradient-to-b from-gray-100 to-white rounded-3xl shadow-2xl overflow-hidden border-4 border-gray-200">
+                  {/* Station Top */}
+                  <div className="bg-gray-800 p-4 rounded-t-2xl">
+                    <div className="text-center">
+                      <span className="text-green-400 text-xs font-semibold tracking-wider">⚡CHARGING</span>
+                    </div>
+                  </div>
+
+                  {/* Screen */}
+                  <div className="bg-gray-900 mx-4 mt-2 rounded-xl p-4">
+                    <div className="text-center mb-4">
+                      <div className="text-5xl font-bold text-white">60%</div>
+                      <div className="text-gray-400 text-xs mt-1">Battery Level</div>
                     </div>
 
                     {/* Progress Bar */}
-                    <div className="mt-auto">
-                      <div className="h-2 bg-gray-700 rounded-full overflow-hidden mb-4">
-                        <div className="h-full bg-green-500 rounded-full" style={{ width: '80%' }}></div>
+                    <div className="h-2 bg-gray-700 rounded-full overflow-hidden mb-4">
+                      <div className="h-full bg-green-500 rounded-full transition-all" style={{ width: '60%' }}></div>
+                    </div>
+
+                    {/* Stats */}
+                    <div className="space-y-2">
+                      <div className="flex justify-between items-center text-sm">
+                        <span className="text-gray-400">Power</span>
+                        <span className="text-white font-medium">7.2 kW</span>
                       </div>
-                      <button className="w-full bg-red-500 text-white py-3 rounded-lg font-medium hover:bg-red-600 transition-colors">
-                        Stop Charging
-                      </button>
+                      <div className="flex justify-between items-center text-sm">
+                        <span className="text-gray-400">Time Left</span>
+                        <span className="text-white font-medium">45 min</span>
+                      </div>
+                      <div className="flex justify-between items-center text-sm">
+                        <span className="text-gray-400">Cost</span>
+                        <span className="text-green-400 font-medium">₹8.50</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Station Body */}
+                  <div className="p-4 space-y-3">
+                    <div className="h-4 bg-gray-200 rounded"></div>
+                    <div className="flex gap-2">
+                      <div className="h-8 w-8 bg-green-500 rounded-full flex items-center justify-center">
+                        <Zap className="w-4 h-4 text-white" />
+                      </div>
+                      <div className="h-8 flex-1 bg-gray-100 rounded"></div>
                     </div>
                   </div>
                 </div>
 
-                {/* Base */}
-                <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 w-40 h-40 bg-gradient-to-b from-gray-200 to-white rounded-full shadow-xl">
-                  <div className="absolute inset-4 bg-gray-300 rounded-full flex items-center justify-center">
-                    <div className="w-16 h-16 bg-gray-400 rounded-full"></div>
-                  </div>
-                </div>
+                {/* Station Base */}
+                <div className="w-32 h-8 bg-gradient-to-b from-gray-300 to-gray-400 rounded-b-xl mx-auto -mt-1 shadow-lg"></div>
+                <div className="w-40 h-4 bg-gray-200 rounded-full mx-auto mt-2 shadow-inner"></div>
               </div>
             </div>
           </div>
@@ -131,217 +149,206 @@ const Landing = () => {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-20 bg-white">
+      <section id="features" className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-6">
+          {/* Section Header */}
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Smarter Charging<br />
+              Smarter Charging
+              <br />
               <span className="text-green-600">Seamless</span> Experience
             </h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
-              Everything you need to monitor, manage, and optimize your EV charging ad from one intuitive dashboard.
+              Everything you need to monitor, manage, and optimize your EV charging all from one intuitive dashboard.
             </p>
           </div>
 
+          {/* Feature Cards Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Smart Load Balancing */}
-            <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100 hover:shadow-xl transition-shadow">
+            <div className="bg-white rounded-2xl shadow-sm p-8 border border-gray-100 hover:shadow-lg transition-shadow">
               <div className="mb-6">
-                <div className="relative h-48 flex items-center justify-center">
-                  <svg className="w-full h-full" viewBox="0 0 400 200">
-                    {/* Flow diagram */}
-                    <rect x="50" y="80" width="60" height="40" rx="8" fill="#10b981" />
-                    <text x="80" y="105" textAnchor="middle" fill="white" fontSize="12" fontWeight="bold">A</text>
+                <div className="relative h-48 flex items-center justify-center bg-gray-50 rounded-xl">
+                  <svg className="w-full h-full p-4" viewBox="0 0 400 180">
+                    {/* Source Node */}
+                    <rect x="20" y="70" width="50" height="40" rx="6" fill="#10b981" />
+                    <text x="45" y="95" textAnchor="middle" fill="white" fontSize="14" fontWeight="bold">A</text>
                     
-                    <rect x="280" y="20" width="60" height="40" rx="8" fill="#10b981" />
-                    <text x="310" y="45" textAnchor="middle" fill="white" fontSize="12" fontWeight="bold">MAX</text>
+                    {/* Center Distribution Node */}
+                    <circle cx="180" cy="90" r="35" fill="#059669" />
+                    <text x="180" y="85" textAnchor="middle" fill="white" fontSize="12" fontWeight="bold">32 kW</text>
+                    <text x="180" y="100" textAnchor="middle" fill="white" fontSize="10">Total</text>
+
+                    {/* Output Nodes */}
+                    <rect x="300" y="20" width="70" height="35" rx="6" fill="#10b981" />
+                    <text x="335" y="43" textAnchor="middle" fill="white" fontSize="11" fontWeight="bold">7 kW</text>
                     
-                    <rect x="280" y="80" width="60" height="40" rx="8" fill="#059669" />
-                    <text x="310" y="105" textAnchor="middle" fill="white" fontSize="12" fontWeight="bold">48 kW</text>
+                    <rect x="300" y="72" width="70" height="35" rx="6" fill="#059669" />
+                    <text x="335" y="95" textAnchor="middle" fill="white" fontSize="11" fontWeight="bold">10 kW</text>
                     
-                    <rect x="280" y="140" width="60" height="40" rx="8" fill="#10b981" />
-                    <text x="310" y="165" textAnchor="middle" fill="white" fontSize="12" fontWeight="bold">STOP</text>
+                    <rect x="300" y="125" width="70" height="35" rx="6" fill="#10b981" />
+                    <text x="335" y="148" textAnchor="middle" fill="white" fontSize="11" fontWeight="bold">15 kW</text>
 
-                    {/* Center node */}
-                    <circle cx="200" cy="100" r="30" fill="#059669" />
-                    <text x="200" y="105" textAnchor="middle" fill="white" fontSize="14" fontWeight="bold">48 kW</text>
+                    {/* Connecting Lines */}
+                    <path d="M 70 90 Q 120 90 145 90" stroke="#10b981" strokeWidth="2" fill="none" strokeDasharray="5,5" />
+                    <path d="M 215 90 Q 250 50 300 38" stroke="#10b981" strokeWidth="2" fill="none" strokeDasharray="5,5" />
+                    <path d="M 215 90 L 300 90" stroke="#059669" strokeWidth="2" fill="none" strokeDasharray="5,5" />
+                    <path d="M 215 90 Q 250 130 300 142" stroke="#10b981" strokeWidth="2" fill="none" strokeDasharray="5,5" />
 
-                    {/* Connecting lines */}
-                    <path d="M 110 100 L 170 100" stroke="#10b981" strokeWidth="3" fill="none" markerEnd="url(#arrowhead)" />
-                    <path d="M 230 100 L 280 40" stroke="#10b981" strokeWidth="3" fill="none" markerEnd="url(#arrowhead)" />
-                    <path d="M 230 100 L 280 100" stroke="#10b981" strokeWidth="3" fill="none" markerEnd="url(#arrowhead)" />
-                    <path d="M 230 100 L 280 160" stroke="#10b981" strokeWidth="3" fill="none" markerEnd="url(#arrowhead)" />
-
-                    <defs>
-                      <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
-                        <polygon points="0 0, 10 3, 0 6" fill="#10b981" />
-                      </marker>
-                    </defs>
+                    {/* Arrow markers */}
+                    <circle cx="145" cy="90" r="4" fill="#10b981" />
+                    <circle cx="295" cy="38" r="4" fill="#10b981" />
+                    <circle cx="295" cy="90" r="4" fill="#059669" />
+                    <circle cx="295" cy="142" r="4" fill="#10b981" />
                   </svg>
-                  
-                  {/* Legend */}
-                  <div className="absolute bottom-0 left-0 flex items-center gap-4 text-xs">
-                    <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                      <span className="text-gray-600">50% Tracked</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                      <span className="text-gray-600">50% Negated</span>
-                    </div>
-                  </div>
                 </div>
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-3">Smart Load Balancing</h3>
-              <p className="text-gray-600">
+              <h3 className="text-xl font-bold text-gray-900 mb-3">Smart Load Balancing</h3>
+              <p className="text-gray-600 text-sm">
                 Manages power across all charging points to prevent grid overload and lower peak-time energy costs efficiently.
               </p>
             </div>
 
             {/* Centralized Billing */}
-            <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100 hover:shadow-xl transition-shadow">
+            <div className="bg-white rounded-2xl shadow-sm p-8 border border-gray-100 hover:shadow-lg transition-shadow">
               <div className="mb-6">
-                <div className="relative h-48">
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="relative w-48 h-48">
-                      {/* Center circle */}
-                      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-32 h-32 rounded-full bg-green-100 flex items-center justify-center z-10">
-                        <div className="text-center">
-                          <DollarSign className="w-8 h-8 text-green-600 mx-auto mb-1" />
-                          <div className="text-sm font-semibold text-gray-900">Centralized EV</div>
-                          <div className="text-sm font-semibold text-gray-900">Billing System</div>
-                        </div>
+                <div className="relative h-48 flex items-center justify-center bg-gray-50 rounded-xl overflow-hidden">
+                  {/* Center Circle */}
+                  <div className="relative">
+                    <div className="w-28 h-28 rounded-full bg-green-100 flex items-center justify-center border-2 border-green-200">
+                      <div className="text-center">
+                        <div className="text-xs font-semibold text-gray-900">Centralized EV</div>
+                        <div className="text-xs font-semibold text-gray-900">Billing System</div>
                       </div>
+                    </div>
 
-                      {/* Orbiting elements */}
-                      <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                        <div className="bg-green-500 text-white px-3 py-1 rounded-lg text-xs font-medium whitespace-nowrap">
-                          <Activity className="w-4 h-4 inline mr-1" />
-                          Regulatory Compliance Monitoring
-                        </div>
+                    {/* Orbiting Labels */}
+                    <div className="absolute -top-8 left-1/2 transform -translate-x-1/2">
+                      <div className="bg-green-500 text-white px-2 py-1 rounded text-[10px] font-medium whitespace-nowrap">
+                        Regulatory Compliance Ready
                       </div>
-                      <div className="absolute right-0 top-1/2 transform translate-x-1/2 -translate-y-1/2">
-                        <div className="bg-green-500 text-white px-3 py-1 rounded-lg text-xs font-medium whitespace-nowrap">
-                          <BarChart3 className="w-4 h-4 inline mr-1" />
-                          Revenue Simulation
-                        </div>
+                    </div>
+                    <div className="absolute top-1/2 -right-24 transform -translate-y-1/2">
+                      <div className="bg-green-500 text-white px-2 py-1 rounded text-[10px] font-medium whitespace-nowrap">
+                        Scalable Monetization
                       </div>
-                      <div className="absolute bottom-0 right-1/4 transform translate-y-1/2">
-                        <div className="bg-green-500 text-white px-3 py-1 rounded-lg text-xs font-medium whitespace-nowrap">
-                          <TrendingUp className="w-4 h-4 inline mr-1" />
-                          Energy Pricing
-                        </div>
+                    </div>
+                    <div className="absolute -bottom-8 right-0">
+                      <div className="bg-green-500 text-white px-2 py-1 rounded text-[10px] font-medium whitespace-nowrap">
+                        Faster Error-Free Invoicing
                       </div>
-                      <div className="absolute bottom-0 left-1/4 transform translate-y-1/2">
-                        <div className="bg-green-500 text-white px-3 py-1 rounded-lg text-xs font-medium whitespace-nowrap">
-                          <Wallet className="w-4 h-4 inline mr-1" />
-                          Improved User Experience
-                        </div>
+                    </div>
+                    <div className="absolute -bottom-8 left-0">
+                      <div className="bg-green-500 text-white px-2 py-1 rounded text-[10px] font-medium whitespace-nowrap">
+                        Improved User Experience
                       </div>
-                      <div className="absolute left-0 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                        <div className="bg-green-500 text-white px-3 py-1 rounded-lg text-xs font-medium whitespace-nowrap">
-                          <Activity className="w-4 h-4 inline mr-1" />
-                          Future-Ready Infrastructure
-                        </div>
+                    </div>
+                    <div className="absolute top-1/2 -left-24 transform -translate-y-1/2">
+                      <div className="bg-green-500 text-white px-2 py-1 rounded text-[10px] font-medium whitespace-nowrap">
+                        Future-Ready Infrastructure
                       </div>
-
-                      {/* Connection lines */}
-                      <svg className="absolute inset-0 w-full h-full pointer-events-none">
-                        <line x1="50%" y1="0" x2="50%" y2="30%" stroke="#10b981" strokeWidth="1" strokeDasharray="3,3" />
-                        <line x1="100%" y1="50%" x2="70%" y2="50%" stroke="#10b981" strokeWidth="1" strokeDasharray="3,3" />
-                        <line x1="75%" y1="100%" x2="60%" y2="75%" stroke="#10b981" strokeWidth="1" strokeDasharray="3,3" />
-                        <line x1="25%" y1="100%" x2="40%" y2="75%" stroke="#10b981" strokeWidth="1" strokeDasharray="3,3" />
-                        <line x1="0" y1="50%" x2="30%" y2="50%" stroke="#10b981" strokeWidth="1" strokeDasharray="3,3" />
-                      </svg>
                     </div>
                   </div>
                 </div>
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-3">Centralized Billing</h3>
-              <p className="text-gray-600">
+              <h3 className="text-xl font-bold text-gray-900 mb-3">Centralized Billing</h3>
+              <p className="text-gray-600 text-sm">
                 Offers flexible tariffs and automated invoices, making payment management simple for both operators and users.
               </p>
             </div>
 
-            {/* Energy Efficiency Chart */}
-            <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100 hover:shadow-xl transition-shadow">
+            {/* Energy Efficiency */}
+            <div className="bg-white rounded-2xl shadow-sm p-8 border border-gray-100 hover:shadow-lg transition-shadow">
               <div className="mb-6">
-                <div className="relative h-48">
-                  <svg viewBox="0 0 400 180" className="w-full h-full">
-                    {/* Grid lines */}
-                    <line x1="40" y1="150" x2="360" y2="150" stroke="#e5e7eb" strokeWidth="1" />
-                    <line x1="40" y1="110" x2="360" y2="110" stroke="#e5e7eb" strokeWidth="1" />
-                    <line x1="40" y1="70" x2="360" y2="70" stroke="#e5e7eb" strokeWidth="1" />
-                    <line x1="40" y1="30" x2="360" y2="30" stroke="#e5e7eb" strokeWidth="1" />
+                <div className="relative h-48 bg-gray-50 rounded-xl p-4">
+                  {/* Legend */}
+                  <div className="flex items-center gap-4 mb-4 text-xs">
+                    <div className="flex items-center gap-1">
+                      <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                      <span className="text-gray-600">50% Positive</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <div className="w-2 h-2 rounded-full bg-red-400"></div>
+                      <span className="text-gray-600">10% Negative</span>
+                    </div>
+                  </div>
 
-                    {/* Area gradient */}
+                  {/* Chart */}
+                  <svg viewBox="0 0 350 120" className="w-full h-28">
                     <defs>
-                      <linearGradient id="areaGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                      <linearGradient id="chartGradient" x1="0%" y1="0%" x2="0%" y2="100%">
                         <stop offset="0%" stopColor="#10b981" stopOpacity="0.3" />
                         <stop offset="100%" stopColor="#10b981" stopOpacity="0.05" />
                       </linearGradient>
                     </defs>
 
-                    {/* Area path */}
+                    {/* Grid lines */}
+                    <line x1="0" y1="100" x2="350" y2="100" stroke="#e5e7eb" strokeWidth="1" />
+                    <line x1="0" y1="70" x2="350" y2="70" stroke="#e5e7eb" strokeWidth="1" strokeDasharray="4,4" />
+                    <line x1="0" y1="40" x2="350" y2="40" stroke="#e5e7eb" strokeWidth="1" strokeDasharray="4,4" />
+
+                    {/* Area */}
                     <path
-                      d="M 40 140 L 100 130 L 160 115 L 220 105 L 280 95 L 340 85 L 360 80 L 360 150 L 40 150 Z"
-                      fill="url(#areaGradient)"
+                      d="M 0 90 Q 50 85 100 75 T 200 55 T 300 35 L 350 30 L 350 100 L 0 100 Z"
+                      fill="url(#chartGradient)"
                     />
 
                     {/* Line */}
                     <path
-                      d="M 40 140 L 100 130 L 160 115 L 220 105 L 280 95 L 340 85 L 360 80"
+                      d="M 0 90 Q 50 85 100 75 T 200 55 T 300 35 L 350 30"
                       fill="none"
                       stroke="#10b981"
-                      strokeWidth="3"
+                      strokeWidth="2"
                     />
 
-                    {/* Y-axis label */}
-                    <text x="10" y="155" fontSize="10" fill="#6b7280">Charging station status</text>
+                    {/* Data points */}
+                    <circle cx="100" cy="75" r="3" fill="#10b981" />
+                    <circle cx="200" cy="55" r="3" fill="#10b981" />
+                    <circle cx="300" cy="35" r="3" fill="#10b981" />
                   </svg>
-                  
-                  {/* Legend */}
-                  <div className="absolute bottom-0 left-0 flex items-center gap-4 text-xs">
-                    <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                      <span className="text-gray-600">50% Tracked</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                      <span className="text-gray-600">50% Negated</span>
-                    </div>
-                  </div>
+
+                  {/* Y-axis label */}
+                  <div className="text-[10px] text-gray-500 mt-1">Charging station status</div>
                 </div>
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-3">Energy Efficiency</h3>
-              <p className="text-gray-600">
+              <h3 className="text-xl font-bold text-gray-900 mb-3">Energy Efficiency</h3>
+              <p className="text-gray-600 text-sm">
                 Track real-time energy consumption and optimize charging schedules for maximum efficiency.
               </p>
             </div>
 
             {/* Revenue Integration */}
-            <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100 hover:shadow-xl transition-shadow">
+            <div className="bg-white rounded-2xl shadow-sm p-8 border border-gray-100 hover:shadow-lg transition-shadow">
               <div className="mb-6">
-                <div className="relative h-48 flex items-center justify-center">
-                  <div className="grid grid-cols-3 gap-4">
-                    {/* Payment icons */}
-                    <div className="w-20 h-16 bg-gradient-to-br from-green-100 to-green-50 rounded-lg flex items-center justify-center border border-green-200 opacity-40">
-                      <Wallet className="w-8 h-8 text-green-600" />
+                <div className="relative h-48 bg-gray-50 rounded-xl flex items-center justify-center">
+                  {/* Platform Headers */}
+                  <div className="absolute top-4 left-1/2 transform -translate-x-1/2 flex gap-6 text-[10px] text-gray-500 font-medium">
+                    <span>Smart Platforms</span>
+                    <span>IoT Platforms</span>
+                    <span>Energy Manager</span>
+                  </div>
+
+                  {/* Icons Grid */}
+                  <div className="grid grid-cols-3 gap-4 mt-4">
+                    <div className="w-16 h-14 bg-green-100/50 rounded-lg flex items-center justify-center border border-green-200/50">
+                      <Globe className="w-6 h-6 text-green-600/50" />
                     </div>
-                    <div className="w-20 h-16 bg-gradient-to-br from-green-100 to-green-50 rounded-lg flex items-center justify-center border border-green-200 opacity-40">
-                      <DollarSign className="w-8 h-8 text-green-600" />
+                    <div className="w-16 h-14 bg-green-100/50 rounded-lg flex items-center justify-center border border-green-200/50">
+                      <Settings className="w-6 h-6 text-green-600/50" />
                     </div>
-                    <div className="w-20 h-16 bg-gradient-to-br from-green-100 to-green-50 rounded-lg flex items-center justify-center border border-green-200 opacity-40">
-                      <BarChart3 className="w-8 h-8 text-green-600" />
+                    <div className="w-16 h-14 bg-green-100/50 rounded-lg flex items-center justify-center border border-green-200/50">
+                      <Activity className="w-6 h-6 text-green-600/50" />
                     </div>
-                    <div className="w-20 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center border-2 border-green-700 shadow-lg col-start-2">
-                      <Zap className="w-10 h-10 text-white" />
+                    <div className="col-span-3 flex justify-center">
+                      <div className="w-16 h-14 bg-green-500 rounded-lg flex items-center justify-center shadow-lg">
+                        <Zap className="w-8 h-8 text-white" />
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-3">Revenue Integration</h3>
-              <p className="text-gray-600">
+              <h3 className="text-xl font-bold text-gray-900 mb-3">Revenue Integration</h3>
+              <p className="text-gray-600 text-sm">
                 Seamless payment integration with detailed analytics to track and optimize your revenue streams.
               </p>
             </div>
@@ -350,26 +357,31 @@ const Landing = () => {
       </section>
 
       {/* Footer */}
-      <footer className="bg-green-950 text-white py-12">
+      <footer className="w-full bg-green-950 text-white py-12">
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            {/* Logo & Description */}
             <div>
               <div className="flex items-center gap-2 mb-4">
                 <Zap className="w-6 h-6 text-green-400" />
-                <span className="text-xl font-bold">ChargeEase</span>
+                <span className="text-xl font-bold">EvPulse</span>
               </div>
               <p className="text-green-200 text-sm">
                 The complete EV charging management platform for the future.
               </p>
             </div>
+
+            {/* Product Links */}
             <div>
               <h4 className="font-semibold mb-4">Product</h4>
               <ul className="space-y-2 text-sm text-green-200">
-                <li><a href="#" className="hover:text-green-400 transition-colors">Features</a></li>
+                <li><a href="#features" className="hover:text-green-400 transition-colors">Features</a></li>
                 <li><a href="#" className="hover:text-green-400 transition-colors">Pricing</a></li>
-                <li><a href="#" className="hover:text-green-400 transition-colors">Dashboard</a></li>
+                <li><a href="#dashboard" className="hover:text-green-400 transition-colors">Dashboard</a></li>
               </ul>
             </div>
+
+            {/* Company Links */}
             <div>
               <h4 className="font-semibold mb-4">Company</h4>
               <ul className="space-y-2 text-sm text-green-200">
@@ -378,17 +390,21 @@ const Landing = () => {
                 <li><a href="#" className="hover:text-green-400 transition-colors">Careers</a></li>
               </ul>
             </div>
+
+            {/* Support Links */}
             <div>
               <h4 className="font-semibold mb-4">Support</h4>
               <ul className="space-y-2 text-sm text-green-200">
                 <li><a href="#" className="hover:text-green-400 transition-colors">Help Center</a></li>
-                <li><a href="#" className="hover:text-green-400 transition-colors">Contact</a></li>
+                <li><a href="#contact" className="hover:text-green-400 transition-colors">Contact</a></li>
                 <li><a href="#" className="hover:text-green-400 transition-colors">Privacy</a></li>
               </ul>
             </div>
           </div>
+
+          {/* Copyright */}
           <div className="border-t border-green-800 mt-8 pt-8 text-center text-sm text-green-200">
-            © 2026 ChargeEase. All rights reserved.
+            © 2026 EvPulse. All rights reserved.
           </div>
         </div>
       </footer>

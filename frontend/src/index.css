@@ -40,7 +40,7 @@
   }
   
   .input-label {
-    @apply block text-sm font-medium text-secondary-700 mb-1.5;
+    @apply block text-sm font-medium text-secondary-700 mb-1.5 text-left;
   }
   
   .sidebar-link {

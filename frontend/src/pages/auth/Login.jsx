@@ -57,11 +57,11 @@ const Login = () => {
         login(response.user);
         // Navigate based on role
         const rolePath = {
-          user: '/user/dashboard',
-          operator: '/operator/dashboard',
-          admin: '/admin/dashboard',
+          user: '/dashboard',
+          operator: '/operator',
+          admin: '/admin',
         };
-        navigate(rolePath[response.user.role] || '/user/dashboard');
+        navigate(rolePath[response.user.role] || '/dashboard');
       } else {
         setApiError(response.error);
       }

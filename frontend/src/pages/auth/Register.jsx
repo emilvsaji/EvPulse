@@ -87,10 +87,10 @@ const Register = () => {
       if (response.success) {
         login(response.user);
         const rolePath = {
-          user: '/user/dashboard',
-          operator: '/operator/dashboard',
+          user: '/dashboard',
+          operator: '/operator',
         };
-        navigate(rolePath[response.user.role] || '/user/dashboard');
+        navigate(rolePath[response.user.role] || '/dashboard');
       } else {
         setApiError(response.error);
       }
