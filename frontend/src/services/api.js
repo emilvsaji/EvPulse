@@ -1,351 +1,595 @@
-import { users, chargingStations, chargingSessions, bookings, transactions, adminStats, operatorStats, availableTimeSlots, stationReviews, chargingHistory, userNotifications, operatorFeedback, adminFeedbackStats } from './mockData';
+// API Configuration
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
-// Simulate API delay
-const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+// Helper function to get auth token
+const getAuthToken = () => localStorage.getItem('evpulse_token');
+
+// Helper function for API requests
+const apiRequest = async (endpoint, options = {}) => {
+  const token = getAuthToken();
+  
+  const config = {
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token && { Authorization: `Bearer ${token}` }),
+      ...options.headers,
+    },
+    ...options,
+  };
+
+  try {
+    const response = await fetch(`${API_BASE_URL}${endpoint}`, config);
+    const data = await response.json();
+    
+    if (!response.ok) {
+      throw new Error(data.error || 'An error occurred');
+    }
+    
+    return data;
+  } catch (error) {
+    console.error('API Error:', error);
+    throw error;
+  }
+};
 
 // Auth API
 export const authAPI = {
   login: async (email, password) => {
-    await delay(800);
-    const user = users.find(u => u.email === email && u.password === password);
-    if (user) {
-      const { password: _, ...userWithoutPassword } = user;
-      return { success: true, user: userWithoutPassword };
+    try {
+      const response = await apiRequest('/auth/login', {
+        method: 'POST',
+        body: JSON.stringify({ email, password }),
+      });
+      
+      if (response.success && response.token) {
+        localStorage.setItem('evpulse_token', response.token);
+      }
+      
+      return response;
+    } catch (error) {
+      return { success: false, error: error.message };
     }
-    return { success: false, error: 'Invalid email or password' };
   },
 
   register: async (userData) => {
-    await delay(800);
-    const exists = users.find(u => u.email === userData.email);
-    if (exists) {
-      return { success: false, error: 'Email already registered' };
+    try {
+      const response = await apiRequest('/auth/register', {
+        method: 'POST',
+        body: JSON.stringify(userData),
+      });
+      
+      if (response.success && response.token) {
+        localStorage.setItem('evpulse_token', response.token);
+      }
+      
+      return response;
+    } catch (error) {
+      return { success: false, error: error.message };
     }
-    const newUser = {
-      id: users.length + 1,
-      ...userData,
-      joinedDate: new Date().toISOString().split('T')[0],
-    };
-    return { success: true, user: newUser };
+  },
+
+  getCurrentUser: async () => {
+    try {
+      return await apiRequest('/auth/me');
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
+  },
+
+  updateProfile: async (data) => {
+    try {
+      return await apiRequest('/auth/update-profile', {
+        method: 'PUT',
+        body: JSON.stringify(data),
+      });
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
+  },
+
+  changePassword: async (currentPassword, newPassword) => {
+    try {
+      return await apiRequest('/auth/change-password', {
+        method: 'PUT',
+        body: JSON.stringify({ currentPassword, newPassword }),
+      });
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
+  },
+
+  logout: () => {
+    localStorage.removeItem('evpulse_token');
+    localStorage.removeItem('evpulse_user');
   },
 };
 
 // Stations API
 export const stationsAPI = {
   getAll: async (filters = {}) => {
-    await delay(500);
-    let stations = [...chargingStations];
-    
-    if (filters.status && filters.status !== 'all') {
-      stations = stations.filter(s => s.status === filters.status);
+    try {
+      const params = new URLSearchParams();
+      if (filters.status) params.append('status', filters.status);
+      if (filters.chargingType) params.append('chargingType', filters.chargingType);
+      if (filters.maxDistance) params.append('maxDistance', filters.maxDistance);
+      if (filters.sortBy) params.append('sortBy', filters.sortBy);
+      if (filters.lat) params.append('lat', filters.lat);
+      if (filters.lng) params.append('lng', filters.lng);
+      if (filters.city) params.append('city', filters.city);
+      
+      const queryString = params.toString();
+      return await apiRequest(`/stations${queryString ? `?${queryString}` : ''}`);
+    } catch (error) {
+      return { success: false, error: error.message };
     }
-    
-    if (filters.chargingType && filters.chargingType !== 'all') {
-      stations = stations.filter(s => 
-        s.ports.some(p => p.type.toLowerCase().includes(filters.chargingType.toLowerCase()))
-      );
-    }
-    
-    if (filters.maxDistance) {
-      stations = stations.filter(s => s.distance <= filters.maxDistance);
-    }
-    
-    if (filters.sortBy === 'distance') {
-      stations.sort((a, b) => a.distance - b.distance);
-    } else if (filters.sortBy === 'rating') {
-      stations.sort((a, b) => b.rating - a.rating);
-    }
-    
-    return { success: true, data: stations };
   },
 
   getById: async (id) => {
-    await delay(300);
-    const station = chargingStations.find(s => s.id === parseInt(id));
-    if (station) {
-      return { success: true, data: station };
+    try {
+      return await apiRequest(`/stations/${id}`);
+    } catch (error) {
+      return { success: false, error: error.message };
     }
-    return { success: false, error: 'Station not found' };
   },
 
   getByOperator: async (operatorId) => {
-    await delay(400);
-    const stations = chargingStations.filter(s => s.operatorId === operatorId);
-    return { success: true, data: stations };
+    try {
+      return await apiRequest(`/stations/operator/${operatorId}`);
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
+  },
+
+  create: async (stationData) => {
+    try {
+      return await apiRequest('/stations', {
+        method: 'POST',
+        body: JSON.stringify(stationData),
+      });
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
+  },
+
+  update: async (stationId, stationData) => {
+    try {
+      return await apiRequest(`/stations/${stationId}`, {
+        method: 'PUT',
+        body: JSON.stringify(stationData),
+      });
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
+  },
+
+  updateStatus: async (stationId, status) => {
+    try {
+      return await apiRequest(`/stations/${stationId}/status`, {
+        method: 'PUT',
+        body: JSON.stringify({ status }),
+      });
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
   },
 };
 
 // Sessions API
 export const sessionsAPI = {
   getByUser: async (userId) => {
-    await delay(400);
-    const sessions = chargingSessions.filter(s => s.userId === userId);
-    return { success: true, data: sessions };
+    try {
+      return await apiRequest(`/sessions/user/${userId}`);
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
   },
 
   getActive: async (userId) => {
-    await delay(300);
-    const session = chargingSessions.find(s => s.userId === userId && s.status === 'active');
-    return { success: true, data: session };
+    try {
+      return await apiRequest(`/sessions/active/${userId}`);
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
   },
 
   startSession: async (sessionData) => {
-    await delay(600);
-    const newSession = {
-      id: chargingSessions.length + 1,
-      ...sessionData,
-      startTime: new Date().toISOString(),
-      status: 'active',
-      progress: 0,
-    };
-    return { success: true, data: newSession };
+    try {
+      return await apiRequest('/sessions/start', {
+        method: 'POST',
+        body: JSON.stringify(sessionData),
+      });
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
   },
 
   stopSession: async (sessionId) => {
-    await delay(500);
-    return { 
-      success: true, 
-      data: { 
-        ...chargingSessions.find(s => s.id === sessionId),
-        status: 'completed',
-        endTime: new Date().toISOString(),
-      }
-    };
+    try {
+      return await apiRequest(`/sessions/stop/${sessionId}`, {
+        method: 'POST',
+      });
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
   },
 
   getByStation: async (stationId) => {
-    await delay(400);
-    const sessions = chargingSessions.filter(s => s.stationId === stationId);
-    return { success: true, data: sessions };
+    try {
+      return await apiRequest(`/sessions/station/${stationId}`);
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
   },
 };
 
 // Bookings API
 export const bookingsAPI = {
   getByUser: async (userId) => {
-    await delay(400);
-    const userBookings = bookings.filter(b => b.userId === userId);
-    return { success: true, data: userBookings };
+    try {
+      return await apiRequest(`/bookings/user/${userId}`);
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
   },
 
   create: async (bookingData) => {
-    await delay(600);
-    const newBooking = {
-      id: bookings.length + 1,
-      ...bookingData,
-      status: 'confirmed',
-      createdAt: new Date().toISOString(),
-    };
-    return { success: true, data: newBooking };
+    try {
+      return await apiRequest('/bookings', {
+        method: 'POST',
+        body: JSON.stringify(bookingData),
+      });
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
   },
 
   cancel: async (bookingId) => {
-    await delay(400);
-    return { success: true, message: 'Booking cancelled successfully' };
+    try {
+      return await apiRequest(`/bookings/${bookingId}/cancel`, {
+        method: 'POST',
+      });
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
   },
 
-  getAvailableSlots: async (stationId, date) => {
-    await delay(300);
-    // Simulate some slots being unavailable
-    const unavailable = ['12:00 - 13:00', '18:00 - 19:00'];
-    const available = availableTimeSlots.filter(slot => !unavailable.includes(slot));
-    return { success: true, data: available };
+  getAvailableSlots: async (stationId, date, portId) => {
+    try {
+      const params = new URLSearchParams({ stationId, date });
+      if (portId) params.append('portId', portId);
+      return await apiRequest(`/bookings/available-slots?${params.toString()}`);
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
+  },
+
+  getByStation: async (stationId) => {
+    try {
+      return await apiRequest(`/bookings/station/${stationId}`);
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
   },
 };
 
 // Transactions API
 export const transactionsAPI = {
   getByUser: async (userId) => {
-    await delay(400);
-    const userTransactions = transactions.filter(t => t.userId === userId);
-    return { success: true, data: userTransactions };
+    try {
+      return await apiRequest(`/transactions/user/${userId}`);
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
   },
 
   processPayment: async (paymentData) => {
-    await delay(1000);
-    return { 
-      success: true, 
-      data: {
-        id: Date.now(),
-        ...paymentData,
-        status: 'completed',
-        timestamp: new Date().toISOString(),
-      }
-    };
+    try {
+      return await apiRequest('/transactions/process', {
+        method: 'POST',
+        body: JSON.stringify(paymentData),
+      });
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
   },
 
   getWalletBalance: async (userId) => {
-    await delay(300);
-    return { success: true, data: { balance: 87.40 } };
+    try {
+      return await apiRequest(`/transactions/wallet/balance/${userId}`);
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
   },
 
   topUpWallet: async (amount, paymentMethod) => {
-    await delay(800);
-    return { 
-      success: true, 
-      data: { 
-        newBalance: 87.40 + amount,
-        transactionId: Date.now(),
-      }
-    };
+    try {
+      return await apiRequest('/transactions/wallet/topup', {
+        method: 'POST',
+        body: JSON.stringify({ amount, paymentMethod }),
+      });
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
+  },
+
+  getSummary: async (userId) => {
+    try {
+      return await apiRequest(`/transactions/summary/${userId}`);
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
   },
 };
 
 // Admin API
 export const adminAPI = {
   getStats: async () => {
-    await delay(500);
-    return { success: true, data: adminStats };
+    try {
+      return await apiRequest('/admin/stats');
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
   },
 
-  getAllUsers: async () => {
-    await delay(400);
-    return { success: true, data: users.map(({ password, ...user }) => user) };
+  getAllUsers: async (role) => {
+    try {
+      const params = role ? `?role=${role}` : '';
+      return await apiRequest(`/admin/users${params}`);
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
   },
 
   getAllStations: async () => {
-    await delay(400);
-    return { success: true, data: chargingStations };
+    try {
+      return await apiRequest('/admin/stations');
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
   },
 
   updateUserStatus: async (userId, status) => {
-    await delay(500);
-    return { success: true, message: 'User status updated' };
+    try {
+      return await apiRequest(`/admin/users/${userId}/status`, {
+        method: 'PUT',
+        body: JSON.stringify({ status }),
+      });
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
   },
 
   updateStationStatus: async (stationId, status) => {
-    await delay(500);
-    return { success: true, message: 'Station status updated' };
+    try {
+      return await apiRequest(`/admin/stations/${stationId}/status`, {
+        method: 'PUT',
+        body: JSON.stringify({ status }),
+      });
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
   },
 };
 
 // Operator API
 export const operatorAPI = {
   getStats: async (operatorId) => {
-    await delay(500);
-    return { success: true, data: operatorStats };
+    try {
+      return await apiRequest('/operator/stats');
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
+  },
+
+  getStations: async () => {
+    try {
+      return await apiRequest('/operator/stations');
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
   },
 
   updatePricing: async (stationId, pricing) => {
-    await delay(600);
-    return { success: true, message: 'Pricing updated successfully' };
+    try {
+      return await apiRequest(`/operator/pricing/${stationId}`, {
+        method: 'PUT',
+        body: JSON.stringify(pricing),
+      });
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
   },
 
-  updatePortStatus: async (portId, status) => {
-    await delay(400);
-    return { success: true, message: 'Port status updated' };
+  updatePortStatus: async (stationId, portId, status) => {
+    try {
+      return await apiRequest(`/operator/port-status/${stationId}/${portId}`, {
+        method: 'PUT',
+        body: JSON.stringify({ status }),
+      });
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
   },
 
   getMaintenanceAlerts: async (operatorId) => {
-    await delay(400);
-    return { success: true, data: operatorStats.maintenanceAlerts };
+    try {
+      return await apiRequest('/operator/maintenance-alerts');
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
   },
 
   resolveAlert: async (alertId) => {
-    await delay(500);
-    return { success: true, message: 'Alert resolved' };
+    try {
+      return await apiRequest(`/operator/resolve-alert/${alertId}`, {
+        method: 'POST',
+      });
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
   },
 
   getFeedback: async (operatorId) => {
-    await delay(400);
-    return { success: true, data: operatorFeedback };
+    try {
+      return await apiRequest('/operator/feedback');
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
   },
 };
 
 // Reviews API
 export const reviewsAPI = {
   getByStation: async (stationId) => {
-    await delay(400);
-    const reviews = stationReviews.filter(r => r.stationId === parseInt(stationId));
-    return { success: true, data: reviews };
+    try {
+      return await apiRequest(`/reviews/station/${stationId}`);
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
   },
 
   create: async (reviewData) => {
-    await delay(600);
-    const newReview = {
-      id: stationReviews.length + 1,
-      ...reviewData,
-      timestamp: new Date().toISOString(),
-      helpful: 0,
-    };
-    return { success: true, data: newReview };
+    try {
+      return await apiRequest('/reviews', {
+        method: 'POST',
+        body: JSON.stringify(reviewData),
+      });
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
   },
 
   getByUser: async (userId) => {
-    await delay(400);
-    const reviews = stationReviews.filter(r => r.userId === userId);
-    return { success: true, data: reviews };
+    try {
+      return await apiRequest(`/reviews/user/${userId}`);
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
+  },
+
+  markHelpful: async (reviewId) => {
+    try {
+      return await apiRequest(`/reviews/${reviewId}/helpful`, {
+        method: 'POST',
+      });
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
   },
 };
 
 // Charging History API
 export const historyAPI = {
   getByUser: async (userId) => {
-    await delay(400);
-    const history = chargingHistory.filter(h => h.userId === userId);
-    return { success: true, data: history };
+    try {
+      return await apiRequest(`/sessions/history/${userId}`);
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
   },
 
   getStats: async (userId) => {
-    await delay(300);
-    const history = chargingHistory.filter(h => h.userId === userId);
-    const totalEnergy = history.reduce((sum, h) => sum + h.energyConsumed, 0);
-    const totalCost = history.reduce((sum, h) => sum + h.cost, 0);
-    const totalSessions = history.length;
-    const avgSessionDuration = history.reduce((sum, h) => sum + h.duration, 0) / totalSessions;
-    
-    return {
-      success: true,
-      data: {
-        totalEnergy: Math.round(totalEnergy * 10) / 10,
-        totalCost: Math.round(totalCost * 100) / 100,
-        totalSessions,
-        avgSessionDuration: Math.round(avgSessionDuration),
-        co2Saved: Math.round(totalEnergy * 0.4 * 10) / 10, // kg CO2 saved
-      },
-    };
+    try {
+      return await apiRequest(`/sessions/stats/${userId}`);
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
   },
 };
 
 // User Notifications API
 export const notificationsAPI = {
   getByUser: async (userId) => {
-    await delay(300);
-    const notifications = userNotifications.filter(n => n.userId === userId);
-    return { success: true, data: notifications };
+    try {
+      return await apiRequest(`/notifications/user/${userId}`);
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
   },
 
   markAsRead: async (notificationId) => {
-    await delay(200);
-    return { success: true, message: 'Notification marked as read' };
+    try {
+      return await apiRequest(`/notifications/${notificationId}/read`, {
+        method: 'PUT',
+      });
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
   },
 
   markAllAsRead: async (userId) => {
-    await delay(300);
-    return { success: true, message: 'All notifications marked as read' };
+    try {
+      return await apiRequest(`/notifications/user/${userId}/read-all`, {
+        method: 'PUT',
+      });
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
+  },
+
+  getUnreadCount: async (userId) => {
+    try {
+      return await apiRequest(`/notifications/user/${userId}/unread-count`);
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
   },
 };
 
 // Admin Feedback API
 export const adminFeedbackAPI = {
   getStats: async () => {
-    await delay(400);
-    return { success: true, data: adminFeedbackStats };
+    try {
+      return await apiRequest('/admin/feedback/stats');
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
   },
 
   getAllReviews: async (filters = {}) => {
-    await delay(500);
-    let reviews = [...stationReviews];
-    
-    if (filters.rating) {
-      reviews = reviews.filter(r => r.rating === filters.rating);
+    try {
+      const params = new URLSearchParams();
+      if (filters.rating) params.append('rating', filters.rating);
+      if (filters.stationId) params.append('stationId', filters.stationId);
+      
+      const queryString = params.toString();
+      return await apiRequest(`/admin/feedback/reviews${queryString ? `?${queryString}` : ''}`);
+    } catch (error) {
+      return { success: false, error: error.message };
     }
-    
-    if (filters.stationId) {
-      reviews = reviews.filter(r => r.stationId === filters.stationId);
+  },
+};
+
+// Users API
+export const usersAPI = {
+  getById: async (userId) => {
+    try {
+      return await apiRequest(`/users/${userId}`);
+    } catch (error) {
+      return { success: false, error: error.message };
     }
-    
-    return { success: true, data: reviews };
+  },
+
+  update: async (userId, data) => {
+    try {
+      return await apiRequest(`/users/${userId}`, {
+        method: 'PUT',
+        body: JSON.stringify(data),
+      });
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
+  },
+
+  search: async (query, role) => {
+    try {
+      const params = new URLSearchParams();
+      if (query) params.append('q', query);
+      if (role) params.append('role', role);
+      return await apiRequest(`/users/search?${params.toString()}`);
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
   },
 };
 

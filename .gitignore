@@ -1,5 +1,24 @@
-# Environment variables
+# Environment variables (NEVER commit these!)
+.env
+.env.local
+.env.development
+.env.production
+.env*.local
 backend/.env
+frontend/.env
+frontend/.env.local
+frontend/.env.development
+frontend/.env.production
+
+# Secret keys and credentials
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+secrets/
+credentials/
+*.secret
 
 # Python
 __pycache__/

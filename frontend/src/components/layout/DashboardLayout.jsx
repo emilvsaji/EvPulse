@@ -6,32 +6,27 @@ import Toast from '../ui/Toast';
 import { useNotifications } from '../../context';
 
 const DashboardLayout = ({ children }) => {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const { toasts, removeToast } = useNotifications();
 
   return (
-    <div className="min-h-screen bg-secondary-50">
+    <div className="min-h-screen bg-gradient-to-br from-secondary-50 via-white to-secondary-50/50">
       {/* Sidebar */}
-      <Sidebar />
-
-      {/* Mobile Overlay */}
-      {sidebarOpen && (
-        <div
-          className="fixed inset-0 bg-black/50 z-30 lg:hidden"
-          onClick={() => setSidebarOpen(false)}
-        />
-      )}
+      <Sidebar 
+        mobileOpen={mobileOpen} 
+        onMobileClose={() => setMobileOpen(false)} 
+      />
 
       {/* Main Content */}
-      <div className="lg:pl-64 min-h-screen transition-all duration-300 flex flex-col">
-        <Navbar onMenuClick={() => setSidebarOpen(!sidebarOpen)} />
+      <div className="lg:pl-72 min-h-screen transition-all duration-300 flex flex-col">
+        <Navbar onMenuClick={() => setMobileOpen(!mobileOpen)} />
         <main className="flex-1 w-full h-full">
           {children ?? <Outlet />}
         </main>
       </div>
 
       {/* Toasts */}
-      <div className="fixed bottom-4 right-4 z-50 space-y-2">
+      <div className="fixed bottom-4 right-4 z-50 space-y-3">
         {toasts.map((toast) => (
           <Toast
             key={toast.id}

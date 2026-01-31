@@ -11,22 +11,23 @@ import {
   Building2,
   Users,
   BarChart3,
-  Bell,
   Wrench,
   FileText,
   ChevronLeft,
   ChevronRight,
+  Sparkles,
+  HelpCircle,
+  X,
 } from 'lucide-react';
 import { useState } from 'react';
 
-const Sidebar = () => {
+const Sidebar = ({ mobileOpen, onMobileClose }) => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
 
   const handleLogout = () => {
     logout();
-    // Use full page redirect to bypass React Router's protected route checks
     window.location.href = '/';
   };
 
@@ -72,80 +73,178 @@ const Sidebar = () => {
 
   const links = getLinks();
 
+  const getRoleBadge = () => {
+    const badges = {
+      admin: { bg: 'bg-red-100', text: 'text-red-700', label: 'Admin' },
+      operator: { bg: 'bg-amber-100', text: 'text-amber-700', label: 'Operator' },
+      user: { bg: 'bg-primary-100', text: 'text-primary-700', label: 'EV Owner' },
+    };
+    return badges[user?.role] || badges.user;
+  };
+
+  const badge = getRoleBadge();
+
   return (
-    <aside
-      className={`fixed left-0 top-0 h-screen bg-white border-r border-secondary-200 transition-all duration-300 z-40 flex flex-col ${
-        collapsed ? 'w-20' : 'w-64'
-      }`}
-    >
-      {/* Logo */}
-      <div className="p-6 border-b border-secondary-100">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center shadow-lg shadow-primary-500/30">
-            <Zap className="w-6 h-6 text-white" />
+    <>
+      {/* Mobile Overlay */}
+      {mobileOpen && (
+        <div 
+          className="fixed inset-0 bg-secondary-900/50 backdrop-blur-sm z-40 lg:hidden"
+          onClick={onMobileClose}
+        />
+      )}
+
+      {/* Sidebar */}
+      <aside
+        className={`fixed left-0 top-0 h-screen bg-white border-r border-secondary-100 transition-all duration-300 ease-in-out z-50 flex flex-col shadow-xl lg:shadow-none ${
+          collapsed ? 'lg:w-20' : 'lg:w-72'
+        } ${mobileOpen ? 'w-72 translate-x-0' : 'w-72 -translate-x-full lg:translate-x-0'}`}
+      >
+        {/* Logo Header */}
+        <div className="h-16 flex items-center justify-between px-6 border-b border-secondary-100 bg-gradient-to-r from-white to-secondary-50/50">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-green-500 rounded-xl flex items-center justify-center shadow-lg shadow-primary-500/25 ring-2 ring-primary-500/20">
+              <Zap className="w-5 h-5 text-white" />
+            </div>
+            {!collapsed && (
+              <span className="text-xl font-bold text-secondary-900 tracking-tight">
+                EV<span className="text-primary-500">Pulse</span>
+              </span>
+            )}
           </div>
-          {!collapsed && (
-            <span className="text-xl font-bold text-secondary-900">
-              EV<span className="text-primary-500">Pulse</span>
-            </span>
-          )}
-        </div>
-      </div>
-
-      {/* Navigation Links */}
-      <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
-        {links.map((link) => (
-          <NavLink
-            key={link.to}
-            to={link.to}
-            className={({ isActive }) =>
-              isActive ? 'sidebar-link-active' : 'sidebar-link'
-            }
+          
+          {/* Mobile Close Button */}
+          <button 
+            onClick={onMobileClose}
+            className="lg:hidden p-2 hover:bg-secondary-100 rounded-lg transition-colors"
           >
-            <link.icon className="w-5 h-5 flex-shrink-0" />
-            {!collapsed && <span>{link.label}</span>}
-          </NavLink>
-        ))}
-      </nav>
+            <X className="w-5 h-5 text-secondary-500" />
+          </button>
+        </div>
 
-      {/* User Info & Logout */}
-      <div className="p-4 border-t border-secondary-100">
+        {/* User Info Card */}
         {!collapsed && (
-          <div className="flex items-center gap-3 px-4 py-3 mb-2">
-            <div className="w-10 h-10 bg-gradient-to-br from-primary-100 to-primary-200 rounded-full flex items-center justify-center">
-              <span className="text-primary-700 font-semibold">
-                {user?.name?.charAt(0) || 'U'}
+          <div className="mx-4 mt-4 p-4 bg-gradient-to-br from-secondary-50 to-secondary-100/50 rounded-2xl border border-secondary-100">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center shadow-md">
+                <span className="text-white font-bold text-lg">
+                  {user?.name?.charAt(0).toUpperCase() || 'U'}
+                </span>
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="font-semibold text-secondary-900 truncate">
+                  {user?.name || 'User'}
+                </p>
+                <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${badge.bg} ${badge.text}`}>
+                  {badge.label}
+                </span>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Collapsed User Avatar */}
+        {collapsed && (
+          <div className="mx-auto mt-4">
+            <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center shadow-md">
+              <span className="text-white font-bold">
+                {user?.name?.charAt(0).toUpperCase() || 'U'}
               </span>
             </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-secondary-900 truncate">
-                {user?.name || 'User'}
-              </p>
-              <p className="text-xs text-secondary-500 capitalize">{user?.role}</p>
-            </div>
           </div>
         )}
-        <button
-          onClick={handleLogout}
-          className="sidebar-link w-full text-red-500 hover:bg-red-50 hover:text-red-600"
-        >
-          <LogOut className="w-5 h-5 flex-shrink-0" />
-          {!collapsed && <span>Logout</span>}
-        </button>
-      </div>
 
-      {/* Collapse Toggle */}
-      <button
-        onClick={() => setCollapsed(!collapsed)}
-        className="absolute -right-3 top-20 w-6 h-6 bg-white border border-secondary-200 rounded-full flex items-center justify-center shadow-sm hover:shadow-md transition-shadow"
-      >
-        {collapsed ? (
-          <ChevronRight className="w-4 h-4 text-secondary-600" />
-        ) : (
-          <ChevronLeft className="w-4 h-4 text-secondary-600" />
+        {/* Navigation Links */}
+        <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto scrollbar-thin scrollbar-thumb-secondary-200 scrollbar-track-transparent">
+          {!collapsed && (
+            <p className="px-3 py-2 text-xs font-semibold text-secondary-400 uppercase tracking-wider">
+              Navigation
+            </p>
+          )}
+          {links.map((link) => (
+            <NavLink
+              key={link.to}
+              to={link.to}
+              onClick={onMobileClose}
+              className={({ isActive }) =>
+                `flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium transition-all duration-200 group ${
+                  isActive
+                    ? 'bg-primary-50 text-primary-700 shadow-sm'
+                    : 'text-secondary-600 hover:bg-secondary-50 hover:text-secondary-900'
+                } ${collapsed ? 'justify-center' : ''}`
+              }
+            >
+              {({ isActive }) => (
+                <>
+                  <div className={`p-2 rounded-lg transition-colors ${
+                    isActive 
+                      ? 'bg-primary-500 text-white shadow-md shadow-primary-500/30' 
+                      : 'bg-secondary-100 text-secondary-500 group-hover:bg-secondary-200 group-hover:text-secondary-700'
+                  }`}>
+                    <link.icon className="w-4 h-4" />
+                  </div>
+                  {!collapsed && <span>{link.label}</span>}
+                  {isActive && !collapsed && (
+                    <div className="ml-auto w-1.5 h-1.5 bg-primary-500 rounded-full" />
+                  )}
+                </>
+              )}
+            </NavLink>
+          ))}
+        </nav>
+
+        {/* Bottom Section */}
+        <div className="p-3 border-t border-secondary-100 space-y-2 bg-gradient-to-t from-secondary-50/50 to-white">
+          {/* Help Link */}
+          {!collapsed && (
+            <button className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-secondary-600 hover:bg-secondary-100 hover:text-secondary-900 transition-colors group">
+              <div className="p-2 rounded-lg bg-secondary-100 text-secondary-500 group-hover:bg-secondary-200 group-hover:text-secondary-700 transition-colors">
+                <HelpCircle className="w-4 h-4" />
+              </div>
+              <span className="font-medium">Help & Support</span>
+            </button>
+          )}
+
+          {/* Logout Button */}
+          <button
+            onClick={handleLogout}
+            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-red-600 hover:bg-red-50 transition-colors group ${
+              collapsed ? 'justify-center' : ''
+            }`}
+          >
+            <div className="p-2 rounded-lg bg-red-100 text-red-500 group-hover:bg-red-200 group-hover:text-red-600 transition-colors">
+              <LogOut className="w-4 h-4" />
+            </div>
+            {!collapsed && <span className="font-medium">Logout</span>}
+          </button>
+        </div>
+
+        {/* Collapse Toggle - Desktop Only */}
+        <button
+          onClick={() => setCollapsed(!collapsed)}
+          className="hidden lg:flex absolute -right-3 top-20 w-6 h-6 bg-white border border-secondary-200 rounded-full items-center justify-center shadow-md hover:shadow-lg hover:scale-110 transition-all duration-200"
+        >
+          {collapsed ? (
+            <ChevronRight className="w-3.5 h-3.5 text-secondary-600" />
+          ) : (
+            <ChevronLeft className="w-3.5 h-3.5 text-secondary-600" />
+          )}
+        </button>
+
+        {/* Upgrade Card - Only show for users when not collapsed */}
+        {!collapsed && user?.role === 'user' && (
+          <div className="mx-3 mb-3 p-4 bg-gradient-to-br from-primary-500 to-green-500 rounded-2xl text-white relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-20 h-20 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+            <Sparkles className="w-6 h-6 mb-2" />
+            <h4 className="font-semibold mb-1">Go Premium</h4>
+            <p className="text-xs text-white/80 mb-3">Get priority booking and lower rates</p>
+            <button className="w-full py-2 bg-white/20 hover:bg-white/30 rounded-lg text-sm font-medium transition-colors backdrop-blur-sm">
+              Upgrade Now
+            </button>
+          </div>
         )}
-      </button>
-    </aside>
+      </aside>
+    </>
   );
 };
 
