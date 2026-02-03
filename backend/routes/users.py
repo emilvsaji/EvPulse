@@ -12,6 +12,10 @@ users_bp = Blueprint('users', __name__)
 def get_user(user_id):
     """Get user by ID"""
     try:
+        # Check if database is available
+        if mongo.db is None:
+            return jsonify({'success': False, 'error': 'Database connection unavailable. Please try again later.'}), 503
+        
         user_data = mongo.db.users.find_one({'_id': ObjectId(user_id)})
         
         if not user_data:
@@ -27,6 +31,10 @@ def get_user(user_id):
 def update_user(user_id):
     """Update user profile"""
     try:
+        # Check if database is available
+        if mongo.db is None:
+            return jsonify({'success': False, 'error': 'Database connection unavailable. Please try again later.'}), 503
+        
         current_user_id = get_jwt_identity()
         
         # Check authorization
@@ -63,6 +71,10 @@ def update_user(user_id):
 def update_user_status(user_id):
     """Update user status (admin only)"""
     try:
+        # Check if database is available
+        if mongo.db is None:
+            return jsonify({'success': False, 'error': 'Database connection unavailable. Please try again later.'}), 503
+        
         current_user_id = get_jwt_identity()
         current_user = mongo.db.users.find_one({'_id': ObjectId(current_user_id)})
         
@@ -92,6 +104,10 @@ def update_user_status(user_id):
 def search_users():
     """Search users (admin only)"""
     try:
+        # Check if database is available
+        if mongo.db is None:
+            return jsonify({'success': False, 'error': 'Database connection unavailable. Please try again later.'}), 503
+        
         current_user_id = get_jwt_identity()
         current_user = mongo.db.users.find_one({'_id': ObjectId(current_user_id)})
         

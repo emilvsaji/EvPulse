@@ -12,6 +12,10 @@ transactions_bp = Blueprint('transactions', __name__)
 def get_user_transactions(user_id):
     """Get all transactions for a user"""
     try:
+        # Check if database is available
+        if mongo.db is None:
+            return jsonify({'success': False, 'error': 'Database connection unavailable. Please try again later.'}), 503
+        
         transactions_data = list(mongo.db.transactions.find({'user_id': user_id}).sort('timestamp', -1))
         transactions = [Transaction.from_dict(data).to_response_dict() for data in transactions_data]
         
@@ -24,6 +28,10 @@ def get_user_transactions(user_id):
 def process_payment():
     """Process a payment"""
     try:
+        # Check if database is available
+        if mongo.db is None:
+            return jsonify({'success': False, 'error': 'Database connection unavailable. Please try again later.'}), 503
+        
         user_id = get_jwt_identity()
         data = request.get_json()
         
@@ -49,6 +57,10 @@ def process_payment():
 def get_wallet_balance(user_id):
     """Get wallet balance for a user"""
     try:
+        # Check if database is available
+        if mongo.db is None:
+            return jsonify({'success': False, 'error': 'Database connection unavailable. Please try again later.'}), 503
+        
         # Calculate balance from transactions
         topups = list(mongo.db.transactions.find({
             'user_id': user_id,
@@ -77,6 +89,10 @@ def get_wallet_balance(user_id):
 def topup_wallet():
     """Top up wallet balance"""
     try:
+        # Check if database is available
+        if mongo.db is None:
+            return jsonify({'success': False, 'error': 'Database connection unavailable. Please try again later.'}), 503
+        
         user_id = get_jwt_identity()
         data = request.get_json()
         
@@ -128,6 +144,10 @@ def topup_wallet():
 def get_transaction_summary(user_id):
     """Get transaction summary for a user"""
     try:
+        # Check if database is available
+        if mongo.db is None:
+            return jsonify({'success': False, 'error': 'Database connection unavailable. Please try again later.'}), 503
+        
         transactions = list(mongo.db.transactions.find({'user_id': user_id}))
         
         charging_total = sum(t.get('amount', 0) for t in transactions if t.get('type') == 'charging')

@@ -1,13 +1,19 @@
 import os
 from datetime import timedelta
 from dotenv import load_dotenv
+import ssl
 
 load_dotenv()
 
 class Config:
     """Base configuration"""
     SECRET_KEY = os.getenv('SECRET_KEY', 'dev-secret-key-change-in-production')
-    MONGO_URI = os.getenv('MONGODB_URI', 'mongodb://localhost:27017/evpulse')
+    MONGO_URI = os.getenv('MONGODB_URI', 'mongodb+srv://evpulse:evpulse2026@cluster0.kdwdasn.mongodb.net/evpulse?retryWrites=true&w=majority')
+    
+    # MongoDB SSL Configuration for Python 3.13 compatibility
+    MONGO_CONNECT = True
+    MONGO_TLS = True
+    MONGO_TLSALLOWINVALIDCERTIFICATES = True  # For development only
     
     # JWT Configuration
     JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY', 'jwt-secret-key-change-in-production')

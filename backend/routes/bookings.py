@@ -21,6 +21,10 @@ AVAILABLE_TIME_SLOTS = [
 def get_user_bookings(user_id):
     """Get all bookings for a user"""
     try:
+        # Check if database is available
+        if mongo.db is None:
+            return jsonify({'success': False, 'error': 'Database connection unavailable. Please try again later.'}), 503
+        
         bookings_data = list(mongo.db.bookings.find({'user_id': user_id}).sort('date', -1))
         
         bookings = []
@@ -41,6 +45,10 @@ def get_user_bookings(user_id):
 def create_booking():
     """Create a new booking"""
     try:
+        # Check if database is available
+        if mongo.db is None:
+            return jsonify({'success': False, 'error': 'Database connection unavailable. Please try again later.'}), 503
+        
         user_id = get_jwt_identity()
         data = request.get_json()
         
@@ -105,6 +113,10 @@ def create_booking():
 def cancel_booking(booking_id):
     """Cancel a booking"""
     try:
+        # Check if database is available
+        if mongo.db is None:
+            return jsonify({'success': False, 'error': 'Database connection unavailable. Please try again later.'}), 503
+        
         user_id = get_jwt_identity()
         
         booking_data = mongo.db.bookings.find_one({'_id': ObjectId(booking_id)})
@@ -131,6 +143,10 @@ def cancel_booking(booking_id):
 def get_available_slots():
     """Get available time slots for a station on a date"""
     try:
+        # Check if database is available
+        if mongo.db is None:
+            return jsonify({'success': False, 'error': 'Database connection unavailable. Please try again later.'}), 503
+        
         station_id = request.args.get('stationId')
         date = request.args.get('date')
         port_id = request.args.get('portId')
@@ -162,6 +178,10 @@ def get_available_slots():
 def get_station_bookings(station_id):
     """Get all bookings for a station (operator view)"""
     try:
+        # Check if database is available
+        if mongo.db is None:
+            return jsonify({'success': False, 'error': 'Database connection unavailable. Please try again later.'}), 503
+        
         bookings_data = list(mongo.db.bookings.find({'station_id': station_id}).sort('date', -1))
         bookings = [Booking.from_dict(data).to_response_dict() for data in bookings_data]
         
