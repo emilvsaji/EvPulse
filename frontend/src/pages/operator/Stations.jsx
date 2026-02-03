@@ -25,6 +25,7 @@ const Stations = () => {
   const [selectedStation, setSelectedStation] = useState(null);
   const [showPricingModal, setShowPricingModal] = useState(false);
   const [showPortModal, setShowPortModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
   
   const [pricingData, setPricingData] = useState({
     normalBase: '',
@@ -33,6 +34,13 @@ const Stations = () => {
     fastPeak: '',
     peakStart: '',
     peakEnd: '',
+  });
+
+  const [editData, setEditData] = useState({
+    name: '',
+    address: '',
+    operatingHours: '',
+    status: '',
   });
 
   useEffect(() => {
@@ -61,6 +69,39 @@ const Stations = () => {
       peakEnd: station.peakHours.end,
     });
     setShowPricingModal(true);
+  };
+
+  const handleEditStation = (station) => {
+    setSelectedStation(station);
+    setEditData({
+      name: station?.name || '',
+      address: station?.address || '',
+      operatingHours: station?.operatingHours || '',
+      status: station?.status || 'available',
+    });
+    setShowEditModal(true);
+  };
+
+  const handleSaveStation = async () => {
+    try {
+      // Update local state
+      setStations(prev => prev.map(s => 
+        s.id === selectedStation.id 
+          ? { ...s, ...editData }
+          : s
+      ));
+      showToast({ type: 'success', message: 'Station updated successfully!' });
+      setShowEditModal(false);
+      setSelectedStation(null);
+      setEditData({
+        name: '',
+        address: '',
+        operatingHours: '',
+        status: '',
+      });
+    } catch (error) {
+      showToast({ type: 'error', message: 'Failed to update station' });
+    }
   };
 
   const handleSavePricing = async () => {
@@ -154,7 +195,12 @@ const Stations = () => {
                   >
                     Pricing
                   </Button>
-                  <Button variant="outline" size="sm" icon={Edit}>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    icon={Edit}
+                    onClick={() => handleEditStation(station)}
+                  >
                     Edit
                   </Button>
                 </div>
@@ -327,6 +373,70 @@ const Stations = () => {
             </Button>
             <Button fullWidth onClick={handleSavePricing}>
               Save Pricing
+            </Button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* Edit Station Modal */}
+      <Modal
+        isOpen={showEditModal && selectedStation}
+        onClose={() => {
+          setShowEditModal(false);
+          setSelectedStation(null);
+          setEditData({
+            name: '',
+            address: '',
+            operatingHours: '',
+            status: '',
+          });
+        }}
+        title={`Edit Station - ${selectedStation?.name}`}
+        size="md"
+      >
+        <div className="space-y-4">
+          <Input
+            label="Station Name"
+            value={editData.name}
+            onChange={(e) => setEditData(prev => ({ ...prev, name: e.target.value }))}
+          />
+          <Input
+            label="Address"
+            value={editData.address}
+            onChange={(e) => setEditData(prev => ({ ...prev, address: e.target.value }))}
+          />
+          <Input
+            label="Operating Hours"
+            value={editData.operatingHours}
+            onChange={(e) => setEditData(prev => ({ ...prev, operatingHours: e.target.value }))}
+            placeholder="e.g., 24/7 or 6:00 AM - 11:00 PM"
+          />
+          <Select
+            label="Status"
+            value={editData.status}
+            onChange={(e) => setEditData(prev => ({ ...prev, status: e.target.value }))}
+            options={[
+              { value: 'available', label: 'Available' },
+              { value: 'busy', label: 'Busy' },
+              { value: 'offline', label: 'Offline' },
+            ]}
+          />
+
+          <div className="flex gap-3 pt-4">
+            <Button variant="secondary" fullWidth onClick={() => {
+              setShowEditModal(false);
+              setSelectedStation(null);
+              setEditData({
+                name: '',
+                address: '',
+                operatingHours: '',
+                status: '',
+              });
+            }}>
+              Cancel
+            </Button>
+            <Button fullWidth onClick={handleSaveStation}>
+              Save Changes
             </Button>
           </div>
         </div>

@@ -15,7 +15,6 @@ import {
   FileText,
   ChevronLeft,
   ChevronRight,
-  Sparkles,
   HelpCircle,
   X,
 } from 'lucide-react';
@@ -41,7 +40,7 @@ const Sidebar = ({ mobileOpen, onMobileClose }) => {
   ];
 
   const operatorLinks = [
-    { to: '/operator/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
+    { to: '/operator', icon: LayoutDashboard, label: 'Dashboard' },
     { to: '/operator/stations', icon: Building2, label: 'My Stations' },
     { to: '/operator/sessions', icon: Zap, label: 'Sessions' },
     { to: '/operator/feedback', icon: BarChart3, label: 'Feedback' },
@@ -51,7 +50,7 @@ const Sidebar = ({ mobileOpen, onMobileClose }) => {
   ];
 
   const adminLinks = [
-    { to: '/admin/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
+    { to: '/admin', icon: LayoutDashboard, label: 'Dashboard' },
     { to: '/admin/users', icon: Users, label: 'Users' },
     { to: '/admin/stations', icon: MapPin, label: 'Stations' },
     { to: '/admin/feedback', icon: BarChart3, label: 'Feedback' },
@@ -233,19 +232,6 @@ const Sidebar = ({ mobileOpen, onMobileClose }) => {
             <ChevronLeft className="w-3.5 h-3.5 text-secondary-600" />
           )}
         </button>
-
-        {/* Upgrade Card - Only show for users when not collapsed */}
-        {!collapsed && user?.role === 'user' && (
-          <div className="mx-3 mb-3 p-4 bg-gradient-to-br from-primary-500 to-green-500 rounded-2xl text-white relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-20 h-20 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
-            <Sparkles className="w-6 h-6 mb-2" />
-            <h4 className="font-semibold mb-1">Go Premium</h4>
-            <p className="text-xs text-white/80 mb-3">Get priority booking and lower rates</p>
-            <button className="w-full py-2 bg-white/20 hover:bg-white/30 rounded-lg text-sm font-medium transition-colors backdrop-blur-sm">
-              Upgrade Now
-            </button>
-          </div>
-        )}
       </aside>
     </>
   );

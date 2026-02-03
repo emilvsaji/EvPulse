@@ -65,7 +65,7 @@ const StationDetail = () => {
 
   // Update AI recommendations when battery level changes
   useEffect(() => {
-    if (station) {
+    if (station && station.ports) {
       updateAiRecommendations();
     }
   }, [currentBattery, targetBattery, station]);
@@ -73,11 +73,29 @@ const StationDetail = () => {
   const fetchStationDetails = async () => {
     try {
       const response = await stationsAPI.getById(id);
-      if (response.success) {
+      if (response.success && response.data) {
         setStation(response.data);
+      } else {
+        // If API fails, try to get from mock data
+        console.log('Fetching from mock data...');
+        const { chargingStations } = await import('../../services/mockData');
+        const mockStation = chargingStations.find(s => s.id === parseInt(id));
+        if (mockStation) {
+          setStation(mockStation);
+        }
       }
     } catch (error) {
       console.error('Failed to fetch station:', error);
+      // Fallback to mock data on error
+      try {
+        const { chargingStations } = await import('../../services/mockData');
+        const mockStation = chargingStations.find(s => s.id === parseInt(id));
+        if (mockStation) {
+          setStation(mockStation);
+        }
+      } catch (e) {
+        console.error('Failed to fetch mock station:', e);
+      }
     } finally {
       setLoading(false);
     }
@@ -95,6 +113,8 @@ const StationDetail = () => {
   };
 
   const updateAiRecommendations = () => {
+    if (!station || !station.ports) return;
+    
     // Get smart charger recommendation
     const recommendation = getSmartChargerRecommendation(currentBattery, 60);
     setAiRecommendation(recommendation);
@@ -107,8 +127,8 @@ const StationDetail = () => {
     setSlotEstimate(estimate);
 
     // Get waiting time estimate
-    const busyPorts = station?.ports.filter(p => p.status === 'busy').length || 0;
-    const totalPorts = station?.ports.length || 4;
+    const busyPorts = station.ports.filter(p => p.status === 'busy').length || 0;
+    const totalPorts = station.ports.length || 4;
     const waitTime = estimateWaitingTime(station?.id, 0, busyPorts, totalPorts);
     setWaitTimeEstimate(waitTime);
   };

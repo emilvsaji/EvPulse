@@ -189,21 +189,20 @@ const Payments = () => {
       {/* Wallet & Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Wallet Card */}
-        <div className="card bg-gradient-to-br from-primary-500 to-primary-600 text-white">
-          <div className="flex items-start justify-between mb-6">
-            <div>
-              <p className="text-primary-100 text-sm">Wallet Balance</p>
-              <p className="text-3xl font-bold mt-1">{formatCurrency(walletBalance)}</p>
-            </div>
-            <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
-              <Wallet className="w-6 h-6" />
-            </div>
-          </div>
+        <div className="space-y-4">
+          <StatCard
+            title="Wallet Balance"
+            value={formatCurrency(walletBalance)}
+            icon={Wallet}
+            iconColor="bg-white/20 text-white"
+            gradient={true}
+            className="bg-gradient-to-br from-primary-500 to-primary-600"
+          />
           <Button 
             variant="secondary" 
             fullWidth 
             onClick={() => setShowTopUpModal(true)}
-            className="bg-white/20 hover:bg-white/30 text-white border-0"
+            className="bg-white hover:bg-secondary-50 text-primary-600 border-white"
           >
             Top Up Wallet
           </Button>

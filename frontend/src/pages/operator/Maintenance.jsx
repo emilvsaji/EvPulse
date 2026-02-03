@@ -33,8 +33,9 @@ const Maintenance = () => {
     try {
       const response = await operatorAPI.getMaintenanceAlerts(user.id);
       // Add some mock data for demonstration
+      const apiData = response?.data || [];
       setAlerts([
-        ...response.data,
+        ...apiData,
         {
           id: 3,
           stationId: 2,

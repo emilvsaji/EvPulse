@@ -66,6 +66,7 @@ export const formatDuration = (minutes) => {
 
 // Format distance
 export const formatDistance = (km) => {
+  if (km === undefined || km === null || isNaN(km)) return 'N/A';
   if (km < 1) return `${(km * 1000).toFixed(0)} m`;
   return `${km.toFixed(1)} km`;
 };

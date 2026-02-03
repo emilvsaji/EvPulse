@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from datetime import datetime
-from app import mongo
+from database import get_db
 from models.user import User
 from bson import ObjectId
 
@@ -18,12 +18,17 @@ def login():
         if not email or not password:
             return jsonify({'success': False, 'error': 'Email and password are required'}), 400
         
+        print(f"Login attempt for: {email}")
+        
+        db = get_db()
+        
         # Check if database is available
-        if mongo.db is None:
+        if db is None:
+            print("   Database connection is None!")
             return jsonify({'success': False, 'error': 'Database connection unavailable. Please try again later.'}), 503
         
         # Find user by email in database
-        user_data = mongo.db.users.find_one({'email': email})
+        user_data = db.users.find_one({'email': email})
         
         if not user_data:
             return jsonify({'success': False, 'error': 'Invalid email or password'}), 401
@@ -57,12 +62,13 @@ def register():
             if not data.get(field):
                 return jsonify({'success': False, 'error': f'{field.capitalize()} is required'}), 400
         
+        db = get_db()
         # Check if database is available
-        if mongo.db is None:
+        if db is None:
             return jsonify({'success': False, 'error': 'Database connection unavailable. Please try again later.'}), 503
         
         # Check if user already exists
-        existing_user = mongo.db.users.find_one({'email': data['email']})
+        existing_user = db.users.find_one({'email': data['email']})
         if existing_user:
             return jsonify({'success': False, 'error': 'Email already registered'}), 400
         
@@ -77,7 +83,7 @@ def register():
             company=data.get('company')
         )
         
-        result = mongo.db.users.insert_one(user.to_dict())
+        result = db.users.insert_one(user.to_dict())
         user.id = str(result.inserted_id)
         
         # Generate token
@@ -97,12 +103,13 @@ def register():
 def get_profile():
     """Get user profile"""
     try:
+        db = get_db()
         # Check if database is available
-        if mongo.db is None:
+        if db is None:
             return jsonify({'success': False, 'error': 'Database connection unavailable. Please try again later.'}), 503
         
         user_id = get_jwt_identity()
-        user_data = mongo.db.users.find_one({'_id': ObjectId(user_id)})
+        user_data = db.users.find_one({'_id': ObjectId(user_id)})
         
         if not user_data:
             return jsonify({'success': False, 'error': 'User not found'}), 404
@@ -121,15 +128,16 @@ def get_profile():
 def update_profile():
     """Update user profile"""
     try:
+        db = get_db()
         # Check if database is available
-        if mongo.db is None:
+        if db is None:
             return jsonify({'success': False, 'error': 'Database connection unavailable. Please try again later.'}), 503
         
         user_id = get_jwt_identity()
         data = request.get_json()
         
         # Find user
-        user_data = mongo.db.users.find_one({'_id': ObjectId(user_id)})
+        user_data = db.users.find_one({'_id': ObjectId(user_id)})
         if not user_data:
             return jsonify({'success': False, 'error': 'User not found'}), 404
         
@@ -139,13 +147,13 @@ def update_profile():
         update_data['updated_at'] = datetime.utcnow()
         
         # Update user in database
-        mongo.db.users.update_one(
+        db.users.update_one(
             {'_id': ObjectId(user_id)},
             {'$set': update_data}
         )
         
         # Get updated user data
-        updated_user_data = mongo.db.users.find_one({'_id': ObjectId(user_id)})
+        updated_user_data = db.users.find_one({'_id': ObjectId(user_id)})
         user = User.from_dict(updated_user_data)
         
         return jsonify({
@@ -161,8 +169,9 @@ def update_profile():
 def change_password():
     """Change user password"""
     try:
+        db = get_db()
         # Check if database is available
-        if mongo.db is None:
+        if db is None:
             return jsonify({'success': False, 'error': 'Database connection unavailable. Please try again later.'}), 503
         
         user_id = get_jwt_identity()
@@ -175,7 +184,7 @@ def change_password():
             return jsonify({'success': False, 'error': 'Current and new passwords are required'}), 400
         
         # Find user
-        user_data = mongo.db.users.find_one({'_id': ObjectId(user_id)})
+        user_data = db.users.find_one({'_id': ObjectId(user_id)})
         if not user_data:
             return jsonify({'success': False, 'error': 'User not found'}), 404
         
@@ -187,7 +196,7 @@ def change_password():
         hashed_password = User.hash_password(new_password)
         
         # Update password in database
-        mongo.db.users.update_one(
+        db.users.update_one(
             {'_id': ObjectId(user_id)},
             {'$set': {'password': hashed_password, 'updated_at': datetime.utcnow()}}
         )
@@ -199,3 +208,4 @@ def change_password():
         
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
+
